@@ -1,7 +1,8 @@
 
 var GRID_SIZE = 100
-var NUM_SNAKES = 20
+var NUM_SNAKES = 5
 var SNAKE_LENGTH = 10
+var COLLISION_THRESHOLD = 10
 var DIRECTIONS = [
     [-1, 0], // up
     [1, 0],  // down
@@ -28,8 +29,27 @@ function random_empty_cell() {
     return [x,y];
 }
 
+function collision_avoidance(current_snake) {
+
+    for (var other_snake of snakes) {
+
+        if (current_snake.id !== other_snake.id) {
+            var current_head = current_snake.cells[0];
+            var other_head = other_snake.cells[0];
+            var distance = Math.abs(Math.hypot(
+                current_head[0]-other_head[0],
+                current_head[1]-other_head[1]
+            ))
+            if (distance <= COLLISION_THRESHOLD) {
+                console.log('collision');
+            }
+        }
+    }
+}
+
 function draw_loop() {
     for (var snake of snakes) {
+        collision_avoidance(snake);
         move_snake(snake);
     }
     window.requestAnimationFrame(draw_loop);
@@ -38,6 +58,7 @@ function draw_loop() {
 function init_snakes() {
     for (i = 0; i < NUM_SNAKES; i++) {
         snakes.push({
+            id: Math.random(),
             heading: random_element(DIRECTIONS),
             length: SNAKE_LENGTH,
             cells: [random_empty_cell()],
