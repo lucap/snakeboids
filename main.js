@@ -1,10 +1,27 @@
 
 GRID_SIZE = 100
 
+function random_empty_cell($table) {
+    var x = Math.floor(Math.random() * GRID_SIZE);
+    var y = Math.floor(Math.random() * GRID_SIZE);
+    $cell = $table.find('tr').eq(x).find('td').eq(y);
+    if ($cell.attr('class') !== undefined) {
+        return random_empty_cell($table);
+    }
+    return $cell;
+}
+
+function draw_loop() {
+    $cell = random_empty_cell($('table'));
+    $cell.addClass('fruit');
+    window.requestAnimationFrame(draw_loop);
+}
+
+
 function draw_grid() {
-    $table = $('table');
+    var $table = $('table');
     for (i = 0; i < GRID_SIZE; i++) {
-        $row = $('<tr>');
+        var $row = $('<tr>');
         for (j = 0; j < GRID_SIZE; j++) {
             $row.append('<td>');
         }
@@ -13,5 +30,6 @@ function draw_grid() {
 }
 
 $(document).ready(function() {
-    draw_grid()
+    draw_grid();
+    window.requestAnimationFrame(draw_loop);
 });
