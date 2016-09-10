@@ -9,11 +9,14 @@ var DIRECTIONS = {
 
 var snakes = []
 
-function random_empty_cell($table) {
+function cell_to_element(x,y) {
+    return $('table').find('tr').eq(x).find('td').eq(y);
+}
+
+function random_empty_cell() {
     var x = Math.floor(Math.random() * GRID_SIZE);
     var y = Math.floor(Math.random() * GRID_SIZE);
-    $cell = $table.find('tr').eq(x).find('td').eq(y);
-    if ($cell.attr('class') !== undefined) {
+    if (cell_to_element(x,y).attr('class') !== undefined) {
         return random_empty_cell($table);
     }
     return [x,y];
@@ -30,8 +33,7 @@ function move_snake(snake, direction) {
     var new_head = [head[0] + move_vector[0], head[1] + move_vector[1]]
     snake.unshift(new_head);
     for (var cell of snake) {
-        $cell = $('table').find('tr').eq(cell[0]).find('td').eq(cell[1]);
-        $cell.addClass('snake');
+        cell_to_element(cell[0],cell[1]).addClass('snake');
     }
 }
 
@@ -48,7 +50,7 @@ function draw_grid() {
 
 $(document).ready(function() {
     draw_grid();
-    var start_cell = random_empty_cell($('table'));
+    var start_cell = random_empty_cell();
     snakes.push([start_cell]);
     window.requestAnimationFrame(draw_loop);
 });
